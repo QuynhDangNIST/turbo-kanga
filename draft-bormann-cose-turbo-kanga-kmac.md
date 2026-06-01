@@ -52,7 +52,7 @@ informative:
 
 ...
 
---- abstract
+# Abstract
 
 RFC 9861 defined and registered four eXtendable-Output Functions
 (XOFs), hash functions with output of arbitrary length, named
