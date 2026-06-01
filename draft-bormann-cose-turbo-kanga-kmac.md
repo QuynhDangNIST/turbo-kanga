@@ -54,24 +54,19 @@ informative:
 
 --- abstract
 
-This document specifies or updates registrations for a number of
-Keccak-based algorithms in the COSE Algorithms Registry.
-
 RFC 9861 defined and registered four eXtendable-Output Functions
 (XOFs), hash functions with output of arbitrary length, named
 TurboSHAKE128, TurboSHAKE256, KT128, and KT256; the present document
 is intended as the IETF consensus document that is now needed to give
 these algorithms Recommended status in the COSE registry.
 
-RFC 9861 only hints at MACs that could make use of the TurboSHAKE and
-KT algorithms.
-This document completes the specification of HopMAC128 and HopMAC256
-from RFC 9861 and also specifies simpler MACs directly based on KT128
-and KT256.
-Finally, this document registers COSE Algorithm identifiers for the
-KMAC set of algorithms (NIST.SP.800-185).
+This document specifies concrete instances of those four functions above to be used as MACs in COSE. 
 
---- middle
+This document also specifies conrete instances of KMAC128 and KMAC256 in {{NIST.SP.800-185}} to be used as MACs in COSE and registers code points for them. 
+
+And, this document provides "Recommmended" status for those algorithms for COSE.
+
+
 
 [^replace-xxxx]: RFC Ed.: throughout this section, please replace
     RFC-XXXX with the RFC number of this specification and remove this
@@ -79,7 +74,9 @@ KMAC set of algorithms (NIST.SP.800-185).
 
 # Introduction
 
-(Please see abstract.)
+TurboSHAKE128, TurboSHAKE256, KT128, and KT256 specified in RFC 9861 have great performance improvement over Keccak-based functions specified in FIPS 202 and SP 800-185. This document specifies concrete instances of those four functions for being used as MACs in COSE and moves their status to "Recommended". 
+
+In addtion, this document also specifies concrete instances of KMAC128 and KMAC256 specified in SP 800-185 for being used as MACs in COSE and registers code points for them.  
 
 ## Conventions and Terminology
 
@@ -87,24 +84,44 @@ KMAC set of algorithms (NIST.SP.800-185).
 
 <!-- Some examples in this specification are truncated using "..." for readability. -->
 
-# Status Recommended for TurboSHAKE128, TurboSHAKE256, KT128, and KT256
 
-(Add text with rationale.)
-
-{{sec-regupdate}} describes the updates needed in the COSE Algorithms registry.
-
-# MAC Algorithms Based on TurboSHAKE128, TurboSHAKE256, KT128, and KT256
+# MAC Algorithms Based on TurboSHAKE128, TurboSHAKE256, KT128, and KT256 for COSE
 
 (Add specifications for the HopMACs and for a simple KT based MAC.)
+## TurboSHAKE129-MAC
+As specified in RFC9861, Section 2, TurboSHAKE128 has 2 required input parameters: the message M and the output length in bytes L, and one optional input parameter D. 
+TurboSHAKE128-MAC is a MAC using TurboSHAKE128 where M is the cancatenation of the original input message, called M', and a 128-bit secret key, called K, denoted as M'|| K. 
+Question for the group: Does the group want to have a D value ? If the answer is yes, what would it be ?
+Question for the group: L being 16 bytes (128 bits) is fine ?
 
-# SHA-3 based Algorithms (KMAC etc.)
+## TurboSHAKE256-MAC
+As specified in RFC9861, Section 2, TurboSHAKE256 has 2 required input parameters: the message M and the output length in bytes L, and one optional input parameter D. 
+TurboSHAKE256-MAC is a MAC using TurboSHAKE256 where M is the cancatenation of the original input message, called M', and a 256-bit secret key, called K, denoted as M'|| K. 
+Question for the group: Does the group want to have a D value ? If the answer is yes, what would it be ?
+Question for the group: L being 16 bytes (256 bits) is fine ?
 
-{{NIST.SP.800-185}}
+## KT128-MAC
+As specified in RFC9861, Section 3, KT128 has 2 required input parameters: the message M and the output length in bytes L, and one optional input parameter C. 
+KT128-MAC is a MAC using KT128 where M is the cancatenation of the original input message, called M', and a 128-bit secret key, called K, denoted as M'|| K. 
+Question for the group: Does the group want to have a C value ? If the answer is yes, what would it be ?
+Question for the group: L being 16 bytes (128 bits) is fine ?
 
-[^kmac]: What algorithms do we want to register?
-    Maybe directly include cSHAKE?
+KT128 was designed to utilize parallelism in SIMD processors. 
 
-[^kmac]
+## KT256-MAC
+As specified in RFC9861, Section 3, KT256 has 2 required input parameters: the message M and the output length in bytes L, and one optional input parameter C. 
+KT256-MAC is a MAC using KT256 where M is the cancatenation of the original input message, called M', and a 256-bit secret key, called K, denoted as M'|| K. 
+Question for the group: Does the group want to have a C value ? If the answer is yes, what would it be ?
+Question for the group: L being 16 bytes (256 bits) is fine ?
+
+KT128 was designed to utilize parallelism in SIMD processors. 
+
+# KMAC128 and KMAC256 for COSE
+
+{{NIST.SP.800-185}} specifies two MAC algorithms: KMAC128 and KMAC256 which have 3 required input parameters and an optional customization string input, called S.  
+The key, K, shall be 128 and 256 bits for KMAC128 and KMAC256 respectively. 
+
+Question for the group: Does the group want to have S to be an empty string ? Or, is there a specific string the group would like to use ? 
 
 # IANA Considerations
 
@@ -147,18 +164,14 @@ have been elided:
 * Change Controller: IETF
 
 
-| Name             | Value | Description               | Reference                   | Recommended |
-|------------------|-------|---------------------------|-----------------------------|-------------|
-| HopMAC256        | -nnn  | HopMAC based on KT256 XOF | {{RFC9861}}, RFC-XXXX         | Yes         |
-| HopMAC128        | -nnn  | HopMAC based on KT128 XOF | {{RFC9861}}, RFC-XXXX         | Yes         |
-| xxxTurboSHAKE256 | -nnn  | TurboSHAKE256 XOF         | {{RFC9861}}, RFC-XXXX         | Yes         |
-| xxxTurboSHAKE128 | -nnn  | TurboSHAKE128 XOF         | {{RFC9861}}, RFC-XXXX         | Yes         |
-| cSHAKE128        | -nnn  | cSHAKE128                 | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
-| cSHAKE256        | -nnn  | cSHAKE256                 | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
-| KMAC128          | -nnn  | KMAC128                   | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
-| KMAC256          | -nnn  | KMAC256                   | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
-| KMACXOF128       | -nnn  | KMACXOF128                | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
-| KMACXOF256       | -nnn  | KMACXOF256                | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
+| Name              | Value | Description               | Reference                     | Recommended |
+|------------------ |-------|---------------------------|-------------------------------|-------------|
+| TurboSHAKE256-MAC | -nnn  | TurboSHAKE256 MAC         | {{RFC9861}}, RFC-XXXX         | Yes         |
+| TurboSHAKE128-MAC | -nnn  | TurboSHAKE128 MAC         | {{RFC9861}}, RFC-XXXX         | Yes         |
+| KMAC128           | -nnn  | KMAC128                   | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
+| KMAC256           | -nnn  | KMAC256                   | {{NIST.SP.800-185}}, RFC-XXXX | Yes         |
+| KT128-MAC         | -nnn  | KT128 MAC                 |  {{RFC9861}}, RFC-XXXX        | Yes         |
+| KT256-MAC         | -nnn  | KT256 MAC                 |  {{RFC9861}}, RFC-XXXX        | Yes         |
 {: #tab-add align="left" title="Registrations Added to COSE Algorithms"}
 
 # Security Considerations
